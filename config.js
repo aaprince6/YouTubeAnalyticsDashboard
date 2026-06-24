@@ -1,5 +1,5 @@
 const APP_CONFIG = {
-  API_KEY: window.LOCAL_API_KEY || 'YOUR_API_KEY_HERE',
+  API_KEY: window.LOCAL_API_KEY || 'AIzaSyCtXMBOzb-ql3Q8iks56xNSXnRORxnBAg4',
   BASE_URL: 'https://www.googleapis.com/youtube/v3',
   CACHE_TTL: 600000,
   CACHE_VER: 2,
