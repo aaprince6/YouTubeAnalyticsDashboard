@@ -65,36 +65,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  loadBtn.addEventListener('click', () => loadChannel(input.value));
+  async function resolveInput(val) {
+    const trimmed = val.trim();
+    if (!trimmed) return;
+    const videoId = parseVideoUrl(trimmed);
+    if (videoId) {
+      setLoading(true);
+      hideAllCharts();
+      document.getElementById('channelInfo').style.display = 'none';
+      document.getElementById('statsGrid').style.display = 'none';
+      document.getElementById('videosSection').style.display = 'none';
+      renderSkeletons();
+      try {
+        const chId = await fetchChannelIdFromVideo(videoId);
+        input.value = chId;
+        await loadChannel(chId);
+      } catch (err) {
+        showToast('Could not find channel from this video', 'error');
+        setLoading(false);
+      }
+    } else {
+      loadChannel(trimmed);
+    }
+  }
+
+  loadBtn.addEventListener('click', () => resolveInput(input.value));
 
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') loadChannel(input.value);
+    if (e.key === 'Enter') resolveInput(input.value);
     if (e.key === 'Escape') { input.blur(); clearSearchResults(); }
   });
 
   // Paste auto-scrape
-  input.addEventListener('paste', () => {
-    setTimeout(async () => {
-      const val = input.value.trim();
-      const videoId = parseVideoUrl(val);
-      if (videoId) {
-        setLoading(true);
-        hideAllCharts();
-        document.getElementById('channelInfo').style.display = 'none';
-        document.getElementById('statsGrid').style.display = 'none';
-        document.getElementById('videosSection').style.display = 'none';
-        renderSkeletons();
-        try {
-          const chId = await fetchChannelIdFromVideo(videoId);
-          input.value = chId;
-          await loadChannel(chId);
-        } catch (err) {
-          showToast('Could not find channel from this video', 'error');
-          setLoading(false);
-        }
-      }
-    }, 50);
-  });
+  input.addEventListener('paste', () => setTimeout(() => resolveInput(input.value), 50));
 
   // Search-as-you-type
   let searchAbortCtrl = null;
