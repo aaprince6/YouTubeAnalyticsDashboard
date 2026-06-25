@@ -94,7 +94,7 @@ async function ensureExchangeRates() {
 
 async function updateRevenueDisplay(currency) {
   const rev = _currentRevenue;
-  if (!rev || rev.min === 0) return;
+  if (!rev) return;
   const rates = await ensureExchangeRates();
   if (!rates) { showToast('Could not load exchange rates', 'error'); return; }
   const rate = rates[currency] || 1;
