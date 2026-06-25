@@ -54,7 +54,9 @@ function estimateRevenue(views) {
 function parseVideoUrl(url) {
   if (!url) return null;
   const u = url.trim();
-  let m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
+  let m = u.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  m = u.match(/(?:youtu\.be\/|shorts\/|embed\/)([a-zA-Z0-9_-]{11})/);
   if (m) return m[1];
   m = u.match(/^([a-zA-Z0-9_-]{11})$/);
   return m ? m[1] : null;
