@@ -152,6 +152,17 @@ async function searchChannelByHandle(query, signal) {
   }));
 }
 
+async function fetchExchangeRates() {
+  const cached = getCache('exchange_rates');
+  if (cached) return cached;
+  const res = await fetch('https://api.frankfurter.app/latest?from=USD');
+  const data = await res.json();
+  if (!data.rates) throw new Error('Failed to fetch exchange rates');
+  const rates = { ...data.rates, USD: 1 };
+  setCache('exchange_rates', rates);
+  return rates;
+}
+
 async function fetchChannelIdFromVideo(videoId) {
   const data = await fetchApi('videos', { part: 'snippet', id: videoId });
   const item = data.items?.[0];

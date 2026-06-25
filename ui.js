@@ -1,5 +1,6 @@
 let _currentVideos = [];
 let _currentSort = 'views';
+let _currentRevenue = { min: 0, max: 0, mid: 0 };
 
 function showChannelInfo(data) {
   const info = document.getElementById('channelInfo');
@@ -50,12 +51,14 @@ function renderStats(data) {
   const subsVal = hidden ? 'Hidden' : formatNumber(data.subs);
   const engRate = data.engagementRate || 0;
   const rev = data.revenue || { min: 0, max: 0, mid: 0 };
+  _currentRevenue = rev;
 
   document.getElementById('totalViews').textContent = formatNumber(data.totalViews);
   document.getElementById('subscriberCount').textContent = subsVal;
   document.getElementById('videoCount').textContent = formatNumber(data.totalVideos);
   document.getElementById('engagementRate').textContent = `${engRate.toFixed(2)}%`;
   document.getElementById('estimatedRevenue').textContent = `$${rev.min}–$${rev.max}`;
+  document.getElementById('currencySelect').value = 'USD';
   document.getElementById('avgWatchTime').textContent = data.avgWatchTime ? `${Math.floor(data.avgWatchTime / 60)}:${String(data.avgWatchTime % 60).padStart(2, '0')}` : '-';
 
   document.getElementById('viewsTrend').textContent = `↗ ${formatNumber(Math.round(data.totalViews * 0.08))}`;
@@ -75,6 +78,20 @@ function renderStats(data) {
     grid.appendChild(note);
   }
   note.textContent = 'ⓘ Avg watch time, monthly growth, revenue, and chart data are estimates';
+}
+
+async function updateRevenueDisplay(currency) {
+  const rev = _currentRevenue;
+  if (!rev) return;
+  const rates = await fetchExchangeRates();
+  const rate = rates[currency] || 1;
+  const cfg = APP_CONFIG.CURRENCIES[currency] || APP_CONFIG.CURRENCIES.USD;
+  const fmt = (n) => n.toLocaleString(cfg.locale);
+  const min = Math.round(rev.min * rate);
+  const max = Math.round(rev.max * rate);
+  const mid = Math.round(rev.mid * rate);
+  document.getElementById('estimatedRevenue').textContent = `${cfg.symbol}${fmt(min)}–${cfg.symbol}${fmt(max)}`;
+  document.getElementById('revenueTrend').textContent = `~${cfg.symbol}${fmt(mid)}/mo`;
 }
 
 function renderVideos(videos, sortBy = 'views') {

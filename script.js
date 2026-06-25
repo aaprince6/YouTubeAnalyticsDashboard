@@ -218,6 +218,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Currency conversion
+  const currencySelect = document.getElementById('currencySelect');
+  currencySelect.addEventListener('change', () => {
+    if (!_lastResult) return;
+    updateRevenueDisplay(currencySelect.value);
+  });
+
   // Clear
   clearBtn.addEventListener('click', () => {
     _lastResult = null;

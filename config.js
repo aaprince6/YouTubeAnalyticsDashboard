@@ -14,5 +14,19 @@ const APP_CONFIG = {
     line: { top: 'rgba(255,0,0,0.15)', bottom: 'rgba(255,0,0,0)' },
     views: { top: 'rgba(59,130,246,0.2)', bottom: 'rgba(59,130,246,0)' },
   },
-  ENGAGEMENT_CHART_COLORS: ['#ff6b6b', '#ffd43b', '#69db7c', '#339af0']
+  ENGAGEMENT_CHART_COLORS: ['#ff6b6b', '#ffd43b', '#69db7c', '#339af0'],
+  CURRENCIES: {
+    USD: { symbol: '$', locale: 'en-US' },
+    EUR: { symbol: '€', locale: 'de-DE' },
+    GBP: { symbol: '£', locale: 'en-GB' },
+    JPY: { symbol: '¥', locale: 'ja-JP' },
+    INR: { symbol: '₹', locale: 'en-IN' },
+    BDT: { symbol: '৳', locale: 'bn-BD' },
+    AUD: { symbol: 'A$', locale: 'en-AU' },
+    CAD: { symbol: 'C$', locale: 'en-CA' },
+    BRL: { symbol: 'R$', locale: 'pt-BR' },
+    KRW: { symbol: '₩', locale: 'ko-KR' },
+    CNY: { symbol: '¥', locale: 'zh-CN' },
+    RUB: { symbol: '₽', locale: 'ru-RU' },
+  }
 };
