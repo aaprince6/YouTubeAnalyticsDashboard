@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showCharts();
       setCurrentSortActive('views');
       scrollToTop();
+      ensureExchangeRates();
     } catch (err) {
       showError(err.message || 'Failed to load channel data');
       showToast(err.message || 'Failed to load channel data', 'error');

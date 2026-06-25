@@ -155,10 +155,18 @@ async function searchChannelByHandle(query, signal) {
 async function fetchExchangeRates() {
   const cached = getCache('exchange_rates');
   if (cached) return cached;
-  const res = await fetch('https://api.frankfurter.app/latest?from=USD');
-  const data = await res.json();
-  if (!data.rates) throw new Error('Failed to fetch exchange rates');
-  const rates = { ...data.rates, USD: 1 };
+  let rates;
+  try {
+    const res = await fetch('https://api.frankfurter.app/latest?from=USD');
+    const data = await res.json();
+    if (data.rates) rates = { ...data.rates, USD: 1 };
+  } catch { /* fall through */ }
+  if (!rates) {
+    const res = await fetch('https://open.er-api.com/v6/latest/USD');
+    const data = await res.json();
+    if (!data.rates) throw new Error('Failed to fetch exchange rates');
+    rates = { ...data.rates, USD: 1 };
+  }
   setCache('exchange_rates', rates);
   return rates;
 }

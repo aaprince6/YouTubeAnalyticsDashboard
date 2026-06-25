@@ -80,10 +80,23 @@ function renderStats(data) {
   note.textContent = 'ⓘ Avg watch time, monthly growth, revenue, and chart data are estimates';
 }
 
+let _exchangeRates = null;
+
+async function ensureExchangeRates() {
+  if (_exchangeRates) return _exchangeRates;
+  try {
+    _exchangeRates = await fetchExchangeRates();
+  } catch {
+    _exchangeRates = null;
+  }
+  return _exchangeRates;
+}
+
 async function updateRevenueDisplay(currency) {
   const rev = _currentRevenue;
-  if (!rev) return;
-  const rates = await fetchExchangeRates();
+  if (!rev || rev.min === 0) return;
+  const rates = await ensureExchangeRates();
+  if (!rates) { showToast('Could not load exchange rates', 'error'); return; }
   const rate = rates[currency] || 1;
   const cfg = APP_CONFIG.CURRENCIES[currency] || APP_CONFIG.CURRENCIES.USD;
   const fmt = (n) => n.toLocaleString(cfg.locale);
